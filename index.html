@@ -3,162 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S_ARCH | Centro Del Carrizal</title>
+    <title>Edgar Caldera | Portafolio de Arquitectura</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;1,700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
     <style>
-        :root {
-            --bg: #f8f8f8;
-            --text: #1a1a1a;
-            --sage: #7a8d80; 
-            --accent: #bc8f8f; /* Tono tierra regional */
-            --font-serif: 'Playfair Display', serif;
-        }
-
+        :root { --bg: #fcfcfc; --text: #1a1a1a; --sage: #7a8d80; --font-serif: 'Playfair Display', serif; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; line-height: 1.6; transition: background 0.3s, color 0.3s; }
 
-        /* --- NAVEGACIÓN ADAPTATIVA --- */
-        nav { 
-            position: fixed; top: 0; width: 100%; z-index: 1000; 
-            padding: 30px 5%; display: flex; justify-content: space-between; align-items: center; 
-            mix-blend-mode: difference; color: white; 
-        }
-        .logo-box { display: flex; align-items: center; gap: 12px; cursor: pointer; }
-        .logo-img { height: 38px; filter: invert(1); }
-        .nav-links a { color: white; text-decoration: none; margin-left: 30px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; }
+        /* MODO LECTURA */
+        body.reading-active { background: #fff; color: #000; }
+        body.reading-active .project-header img { opacity: 0.1; filter: grayscale(1); }
+        body.reading-active .hobby-tag { background: #f0f0f0; border: 1px solid #ddd; }
+
+        /* --- NAVEGACIÓN --- */
+        nav { position: fixed; top: 0; width: 100%; z-index: 1000; padding: 30px 5%; display: flex; justify-content: space-between; align-items: center; mix-blend-mode: difference; color: white; }
+        .nav-links { display: flex; align-items: center; }
+        .nav-links a, .ui-btn { color: white; text-decoration: none; margin-left: 25px; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; opacity: 0.7; transition: 0.3s; border: none; background: none; }
+        .nav-links a:hover, .ui-btn:hover { opacity: 1; color: var(--sage); }
+
+        /* --- SISTEMA LIGHTBOX --- */
+        #lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 9000; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+        #lightbox.active { display: flex; }
+        #lightbox img { max-width: 90%; max-height: 90vh; object-fit: contain; }
 
         /* --- PÁGINAS --- */
-        .page-wrapper { width: 100%; min-height: 100vh; display: none; }
-        .page-wrapper.active { display: block; }
+        .page-wrapper { width: 100%; min-height: 100vh; display: none; opacity: 0; }
+        .page-wrapper.active { display: block; opacity: 1; }
 
-        /* --- HERO: POSICIONAMIENTO CORREGIDO --- */
-        .hero { 
-            position: relative; height: 100vh; background: #111; 
-            display: flex; align-items: center; padding: 0 5%; overflow: hidden;
-        }
-        .hero-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.5; }
+        /* SECCIÓN SOBRE MÍ */
+        .about-section { padding: 150px 5%; display: grid; grid-template-columns: 1fr 1.2fr; gap: 80px; align-items: start; }
+        .about-sidebar img { width: 100%; box-shadow: 20px 20px 0 var(--sage); border-radius: 2px; }
+        .hobby-tag { display: inline-block; padding: 6px 12px; background: #eee; margin: 5px; font-size: 9px; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* DETALLE DE PROYECTO */
+        .project-header { height: 75vh; background: #000; position: relative; display: flex; align-items: center; padding: 0 5%; color: white; overflow: hidden; }
+        .detail-content { display: grid; grid-template-columns: 1.3fr 0.7fr; gap: 60px; padding: 80px 5%; }
         
-        .hero-content { position: relative; z-index: 5; color: white; }
-        .hero-content h1 { font-family: var(--font-serif); font-size: clamp(3rem, 10vw, 7rem); line-height: 0.85; }
-        .hero-content .tag { font-size: 11px; letter-spacing: 5px; text-transform: uppercase; color: var(--sage); margin-bottom: 20px; display: block; }
+        /* GALERÍA */
+        .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; margin-top: 40px; }
+        .gallery-item { border: 1px solid #eee; padding: 15px; background: #fff; cursor: zoom-in; transition: 0.4s; }
+        .gallery-item:hover { border-color: var(--sage); transform: translateY(-5px); }
+        .gallery-item img { width: 100%; height: auto; }
+        .gallery-item span { display: block; margin-top: 12px; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; opacity: 0.6; }
 
-        /* Silueta corregida: no obstruye el texto */
-        .hero-silhouette { 
-            position: absolute; bottom: 0; right: 0; width: 60%; height: 30vh; 
-            z-index: 4; mix-blend-mode: screen; opacity: 0.4; pointer-events: none; 
-        }
-        .hero-silhouette img { width: 100%; height: 100%; object-fit: contain; object-position: right bottom; }
+        .specs-table { position: sticky; top: 120px; }
+        .spec-row { display: flex; justify-content: space-between; padding: 20px 0; border-bottom: 1px solid #eee; font-size: 11px; text-transform: uppercase; }
 
-        /* --- SECCIONES TÉCNICAS --- */
-        .section-padding { padding: 120px 5%; }
-        
-        .grid-tech { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
-        
-        /* Contenedor de Planos */
-        .plans-gallery { display: grid; grid-template-columns: 1fr; gap: 30px; }
-        .plan-card { background: white; border: 1px solid #eee; padding: 20px; transition: 0.3s; }
-        .plan-card:hover { border-color: var(--sage); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .plan-card img { width: 100%; height: auto; cursor: zoom-in; }
-        .plan-card span { display: block; margin-top: 15px; font-size: 10px; letter-spacing: 2px; color: #999; text-transform: uppercase; }
+        .silhouette-overlay { position: absolute; bottom: 0; right: 0; width: 40%; height: auto; pointer-events: none; opacity: 0.4; z-index: 15; filter: brightness(0) invert(1); }
 
-        /* Info del Proyecto */
-        .project-info h2 { font-family: var(--font-serif); font-size: 3rem; margin-bottom: 30px; line-height: 1.1; }
-        .strategy-box { margin: 40px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .strategy-item { border-left: 2px solid var(--accent); padding-left: 15px; }
-        .strategy-item h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--sage); }
-        .strategy-item p { font-size: 13px; color: #666; margin-top: 5px; }
-
-        /* Ficha Técnica */
-        .spec-table { border-top: 1px solid #eee; margin-top: 40px; }
-        .spec-row { display: flex; justify-content: space-between; padding: 18px 0; border-bottom: 1px solid #eee; font-size: 12px; }
-        .spec-row b { text-transform: uppercase; font-size: 10px; color: #999; letter-spacing: 1px; }
-
-        /* --- PORTAFOLIO GRID --- */
-        .projects-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 40px; }
-        .card { cursor: pointer; }
-        .card-img { aspect-ratio: 16/10; background: #ddd; overflow: hidden; margin-bottom: 15px; }
-        .card-img img { width: 100%; height: 100%; object-fit: cover; transition: 0.6s; }
-        .card:hover img { transform: scale(1.05); }
-
-        /* Transición */
-        .curtain { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: #1a1a1a; transform: translateY(100%); z-index: 2000; pointer-events: none; }
+        /* CONTACTO */
+        .contact-page { padding: 150px 5%; text-align: center; max-width: 1000px; margin: 0 auto; }
+        .contact-details { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; margin-top: 80px; text-align: left; }
     </style>
 </head>
 <body>
 
-    <div id="curtain" class="curtain"></div>
+    <div id="lightbox" onclick="this.classList.remove('active')"><img id="lb-img" src=""></div>
 
     <nav>
-        <div class="logo-box" onclick="navigateTo('home')">
-            <img src="Logo.png" class="logo-img">
-            <span style="font-weight:600; letter-spacing:3px; font-size:12px;">S_ARCH</span>
+        <div onclick="navigateTo('home')" style="cursor:pointer; display:flex; align-items:center;">
+            <img src="Logo.png" style="height: 25px; filter: invert(1);">
+            <span style="font-size: 10px; letter-spacing: 3px; font-weight: 600; margin-left:15px;">EDGAR CALDERA</span>
         </div>
         <div class="nav-links">
+            <button class="ui-btn" onclick="toggleReadingMode()">Modo Lectura</button>
+            <button class="ui-btn" onclick="toggleLanguage()">ES / EN</button>
             <a onclick="navigateTo('home')">Inicio</a>
-            <a onclick="navigateTo('projects')">Obras</a>
+            <a onclick="navigateTo('about')">Sobre Mí</a>
+            <a onclick="navigateTo('projects')">Portafolio</a>
             <a onclick="navigateTo('contact')">Contacto</a>
         </div>
     </nav>
 
     <main>
-        <!-- HOME / HERO -->
+        <!-- HOME -->
         <div id="page-home" class="page-wrapper active">
-            <section class="hero">
-                <img class="hero-img" src="Hero.jpg">
-                <div class="hero-content">
-                    <span class="tag">Proyecto Académico // Chihuahua</span>
-                    <h1>Centro <br><span style="font-style:italic; color:var(--sage);">Del Carrizal</span></h1>
-                    <p style="max-width:450px; margin-top:30px; opacity:0.8; font-weight:300;">Reciclaje de espacios en abandono mediante estrategias de inercia térmica y ventilación cruzada.</p>
-                </div>
-                <div class="hero-silhouette">
-                    <img src="Silueta_Tecnica.jpg">
+            <section style="height:100vh; background:#000; position:relative; display:flex; align-items:center; padding:0 5%;">
+                <img src="Hero_2.jpg" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0.6;">
+                <div style="position:relative; z-index:10; color:white;">
+                    <h1 style="font-family:var(--font-serif); font-size:8vw; line-height:0.8;">Arquitectura<br><span style="color:var(--sage); font-style:italic;">& Técnica</span></h1>
                 </div>
             </section>
+        </div>
 
-            <section class="section-padding">
-                <div class="grid-tech">
-                    <div class="plans-gallery">
-                        <div class="plan-card">
-                            <img src="Planta_Baja_2.png" onclick="window.open(this.src)">
-                            <span>Nivel 00 // Cafetería + Invernadero</span>
-                        </div>
-                        <div class="plan-card">
-                            <img src="Planta_Alta_2.png" onclick="window.open(this.src)">
-                            <span>Nivel +3.50 // Talleres + Terraza</span>
-                        </div>
+        <!-- SOBRE MÍ -->
+        <div id="page-about" class="page-wrapper">
+            <section class="about-section">
+                <div class="about-sidebar">
+                    <img src="perfil_edgar_museo.png" alt="Edgar Caldera">
+                    <div style="margin-top:40px;">
+                        <h4 style="font-size:10px; color:var(--sage); letter-spacing:2px; margin-bottom:20px;">INTERESES</h4>
+                        <span class="hobby-tag">Malabarismo</span><span class="hobby-tag">Macramé</span>
+                        <span class="hobby-tag">Muralismo</span><span class="hobby-tag">Instrumentista</span>
+                        <span class="hobby-tag">Naturaleza</span>
                     </div>
-                    <div class="project-info">
-                        <h2>Reutilización y Masa Térmica.</h2>
-                        <p style="color:#666;">Intervención de 165m² que aprovecha estructuras existentes. El programa se divide en una planta baja pública con escenarios y una planta alta de producción creativa con salones expandibles.</p>
-                        
-                        <div class="strategy-box">
-                            <div class="strategy-item">
-                                <h4>Materialidad</h4>
-                                <p>Sistemas regionales de alta capacidad térmica.</p>
-                            </div>
-                            <div class="strategy-item">
-                                <h4>Clima</h4>
-                                <p>Ventilación cruzada inducida por vanos operables.</p>
-                            </div>
-                            <div class="strategy-item">
-                                <h4>Uso</h4>
-                                <p>Salones expandibles y escenarios integrados.</p>
-                            </div>
-                            <div class="strategy-item">
-                                <h4>Contexto</h4>
-                                <p>Aprovechamiento de vacío industrial.</p>
-                            </div>
-                        </div>
-
-                        <div class="spec-table">
-                            <div class="spec-row"><b>Superficie</b><span>165 m²</span></div>
-                            <div class="spec-row"><b>Tipología</b><span>Cultural / Educativo</span></div>
-                            <div class="spec-row"><b>Ubicación</b><span>Carrizal, Chihuahua</span></div>
-                            <div class="spec-row"><b>Estatus</b><span>Investigación Académica</span></div>
-                        </div>
+                </div>
+                <div class="about-content">
+                    <h2 style="font-family:var(--font-serif); font-size:4rem;">Arquitecto & Creativo.</h2>
+                    <p style="margin:30px 0; font-size:1.2rem; color:#444; font-weight:300;">Exploro la arquitectura como una disciplina técnica pero profundamente humana. Mi enfoque integra el rigor del software BIM con la sensibilidad del diseño bioclimático y la honestidad de los materiales regionales.</p>
+                    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:15px; margin-top:50px;">
+                        <div style="border:1px solid #eee; padding:20px; font-size:9px; text-align:center; letter-spacing:2px;">REVIT</div>
+                        <div style="border:1px solid #eee; padding:20px; font-size:9px; text-align:center; letter-spacing:2px;">RHINO</div>
+                        <div style="border:1px solid #eee; padding:20px; font-size:9px; text-align:center; letter-spacing:2px;">V-RAY</div>
                     </div>
                 </div>
             </section>
@@ -166,65 +115,152 @@
 
         <!-- PORTAFOLIO -->
         <div id="page-projects" class="page-wrapper">
-            <section class="section-padding">
-                <h2 style="font-family:var(--font-serif); font-size:3.5rem; margin-bottom:60px;">Archivo de Proyectos</h2>
-                <div class="projects-container" id="grid-proyectos"></div>
+            <section style="padding: 150px 5%;">
+                <h2 style="font-family: var(--font-serif); font-size: 3rem; margin-bottom:60px;">Proyectos Seleccionados.</h2>
+                <div id="grid-container" style="display:grid; grid-template-columns:1fr 1fr; gap:40px;"></div>
+            </section>
+        </div>
+
+        <!-- DETALLE PROYECTO -->
+        <div id="page-detail" class="page-wrapper">
+            <section class="project-header">
+                <img id="det-hero" src="" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0.5;">
+                <div style="position:relative; z-index:10;">
+                    <span id="det-tag" style="letter-spacing:5px; font-size:10px; color:var(--sage); text-transform:uppercase;"></span>
+                    <h2 id="det-title" style="font-family:var(--font-serif); font-size:6vw;"></h2>
+                </div>
+                <img id="det-silhouette" src="" class="silhouette-overlay">
+            </section>
+            
+            <section class="detail-content">
+                <div>
+                    <p id="det-desc" style="font-size:1.4rem; color:#333; margin-bottom:60px; font-weight:300;"></p>
+                    <h4 style="font-size:10px; letter-spacing:3px; margin-bottom:20px; opacity:0.4;">ENTREGABLES TÉCNICOS</h4>
+                    <div id="det-gallery" class="gallery-grid"></div>
+                </div>
+                <div class="specs-table" id="det-specs"></div>
             </section>
         </div>
 
         <!-- CONTACTO -->
         <div id="page-contact" class="page-wrapper">
-            <section class="section-padding" style="text-align:center;">
+            <section class="contact-page">
                 <h2 style="font-family:var(--font-serif); font-size:4rem;">Hablemos.</h2>
-                <form style="max-width:600px; margin:60px auto; text-align:left;">
-                    <input type="text" placeholder="Nombre" style="width:100%; padding:20px; background:none; border:none; border-bottom:1px solid #ccc; margin-bottom:20px; outline:none;">
-                    <input type="email" placeholder="Email" style="width:100%; padding:20px; background:none; border:none; border-bottom:1px solid #ccc; margin-bottom:40px; outline:none;">
-                    <button style="width:100%; padding:25px; background:var(--text); color:white; border:none; cursor:pointer; letter-spacing:2px; font-weight:600;">ENVIAR CONSULTA</button>
-                </form>
+                <div class="contact-details">
+                    <div style="padding-right:40px; border-right:1px solid #eee;">
+                        <p style="font-size:1.2rem; margin-bottom:30px;">Disponible para colaboraciones técnicas y proyectos de diseño arquitectónico.</p>
+                        <p><strong>Email:</strong> edgar.m.caldera.marquez@gmail.com</p>
+                        <p><strong>Tel:</strong> +52 614 521 9333</p>
+                    </div>
+                    <div style="display:grid; gap:20px;">
+                        <input type="text" placeholder="Tu Nombre" style="width:100%; padding:15px; border:none; border-bottom:1px solid #eee; background:transparent;">
+                        <textarea placeholder="Mensaje" rows="4" style="width:100%; padding:15px; border:none; border-bottom:1px solid #eee; background:transparent;"></textarea>
+                        <button style="background:#111; color:#fff; padding:20px; border:none; cursor:pointer; letter-spacing:2px; font-size:10px;">ENVIAR CONSULTA</button>
+                    </div>
+                </div>
             </section>
         </div>
     </main>
 
+    <footer style="padding: 60px 5%; background: #fff; border-top: 1px solid #eee; display: flex; justify-content: space-between; font-size: 10px; letter-spacing: 1px;">
+        <div>EDGAR CALDERA © 2026</div>
+        <div>CHIHUAHUA, MÉXICO</div>
+    </footer>
+
     <script>
-        const proyectos = {
+        const db = {
             carrizal: {
                 title: "Centro Del Carrizal",
-                tag: "Industrial / 165m²",
-                img: "Hero.jpg"
+                tag: "165 m² // Equipamiento Cultural",
+                desc: "Este centro cultural en Chihuahua utiliza la inercia térmica de muros de alta densidad y una disposición estratégica de vanos para optimizar el confort térmico sin depender exclusivamente de sistemas mecánicos. El proyecto integra talleres, áreas de recepción y zonas de exposición bajo un concepto de honestidad matérica.",
+                hero: "Hero_2.jpg",
+                silhouette: "carrizal_trans.png",
+                specs: { "Ubicación": "Chihuahua, MX", "Año": "2024", "Superficie": "165 m²", "Software": "Revit + V-Ray", "Materiales": "Ladrillo, Concreto" },
+                gallery: [
+                    { img: "Render_recepcion_final.jpg", label: "Vista de Recepción e Interior" },
+                    { img: "Hero_2.jpg", label: "Vista Exterior Nocturna (Análisis Lumínico)" },
+                    { img: "Planta_Baja_2.png", label: "Plano Arquitectónico - Planta Baja" },
+                    { img: "Planta_Alta_2.png", label: "Plano Arquitectónico - Planta Alta" },
+                    { img: "Corte_X_final.png", label: "Sección Técnica Transversal X-X" },
+                    { img: "Corte_Y_final.png", label: "Sección Técnica Longitudinal Y-Y" }
+                ]
+            },
+            palomas: {
+                title: "Biblioteca Palomas",
+                tag: "600m2",
+                desc: "La biblioteca palomar es un proyecto social y comunitario en el que se quiere otorgas un espacio publico y fluido, que interfiera poco con el entorno y el flujo comun de las personas hoy en dia, incorporandoel interior y exterior como uno solo, a su vez aprovechando los materiales de la zona",
+                hero: "p2_hero.jpg",
+                silhouette: "p2_silueta_tecnica.jpg",
+                specs: { "Ubicación": "parque palomar", "Año": "2025", "Superficie": "600m2", "Software": "autocad y sketchup", "Materiales": "concreto y aadobe" },
+                gallery: [
+                    { img: "p2_planta arquitectonica.png", label: "Planta Arquitectónica" },
+                    { img: "p2_corte_x.png", label: "Corte X" },
+                    { img: "p2_corte_y.png", label: "Corte Y" },
+                    { img: "p2_render_detalle.jpg", label: "Render Detalle" },
+                    { img: "p2_render_interior_01.jpg", label: "Render Interior 01" }
+                ]
+            },
+            hiberna: {
+                title: "Escuela Hiberna",
+                tag: "180 m² // Infraestructura Educativa",
+                desc: "Escuela hibernadero diseñada específicamente para las condiciones climáticas de Chihuahua. Aprovecha de manera máxima y óptima los recursos naturales de la ciudad: radiación solar, captación pluvial y vientos predominantes para crear un microclima de aprendizaje sustentable.",
+                hero: "p3_hero.jpg",
+                silhouette: "p3_silueta.png",
+                specs: { "Ubicación": "Chihuahua, MX", "Año": "2025", "Superficie": "180 m²", "Software": "3ds Max + AutoCAD", "Materiales": "Adobe, Vidrio, Acero" },
+                gallery: [
+                    { img: "p3_planta.png", label: "Planta de Conjunto y Asoleamiento" },
+                    { img: "p3_corte.png", label: "Sección Técnica de Captación Pluvial" },
+                    { img: "p3_detalle.jpg", label: "Render Detalle Hibernadero" }
+                ]
             }
         };
 
-        function renderProjects() {
-            const container = document.getElementById('grid-proyectos');
-            container.innerHTML = Object.keys(proyectos).map(key => `
-                <div class="card" onclick="navigateTo('home')">
-                    <div class="card-img"><img src="${proyectos[key].img}"></div>
-                    <h3 style="font-family:var(--font-serif); font-size:24px;">${proyectos[key].title}</h3>
-                    <p style="font-size:10px; color:var(--sage); letter-spacing:2px; margin-top:5px; text-transform:uppercase;">${proyectos[key].tag}</p>
-                </div>
-            `).join('');
+        function toggleReadingMode() {
+            document.body.classList.toggle('reading-active');
+        }
+
+        function toggleLanguage() {
+            alert("Función de cambio de idioma activada. Se requiere traducción de base de datos para implementación completa.");
+        }
+
+        function openLightbox(src) {
+            document.getElementById('lb-img').src = src;
+            document.getElementById('lightbox').classList.add('active');
+        }
+
+        function loadProject(key) {
+            const p = db[key];
+            document.getElementById('det-title').innerText = p.title;
+            document.getElementById('det-tag').innerText = p.tag;
+            document.getElementById('det-desc').innerText = p.desc;
+            document.getElementById('det-hero').src = p.hero;
+            document.getElementById('det-silhouette').src = p.silhouette;
+            
+            document.getElementById('det-specs').innerHTML = Object.entries(p.specs)
+                .map(([k,v]) => `<div class="spec-row"><span>${k}</span><strong>${v}</strong></div>`).join('');
+            
+            document.getElementById('det-gallery').innerHTML = p.gallery
+                .map(g => `<div class="gallery-item" onclick="openLightbox('${g.img}')">
+                    <img src="${g.img}">
+                    <span>${g.label}</span>
+                </div>`).join('');
+            
+            navigateTo('detail');
         }
 
         function navigateTo(id) {
-            const curtain = document.getElementById('curtain');
-            if (window.gsap) {
-                gsap.timeline()
-                    .to(curtain, { yPercent: -100, duration: 0.6, ease: "power4.inOut" })
-                    .add(() => {
-                        document.querySelectorAll('.page-wrapper').forEach(p => p.classList.remove('active'));
-                        document.getElementById('page-' + id).classList.add('active');
-                        window.scrollTo(0,0);
-                    })
-                    .to(curtain, { yPercent: -200, duration: 0.6, ease: "power4.inOut" })
-                    .set(curtain, { yPercent: 100 });
-            } else {
-                document.querySelectorAll('.page-wrapper').forEach(p => p.classList.remove('active'));
-                document.getElementById('page-' + id).classList.add('active');
-            }
+            document.querySelectorAll('.page-wrapper').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + id).classList.add('active');
+            window.scrollTo(0,0);
         }
 
         window.onload = () => {
-            renderProjects();
+            const container = document.getElementById('grid-container');
+            container.innerHTML = Object.keys(db).map(k => `
+                <div onclick="loadProject('${k}')" style="cursor:pointer">
+                    <img src="${db[k].hero}" style="width:100%; aspect-ratio:1.5; object-fit:cover; transition:0.3s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1">
+                    <h3 style="margin-top:20px; font-family:var(--font-serif); font-size:1.5rem;">${db[k].title}</h3>
+                </div>`).join('');
         };
     </script>
 </body>
